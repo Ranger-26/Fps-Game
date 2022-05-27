@@ -16,6 +16,10 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 _playerVel;
 
     private CharacterController _controller;
+    
+    private bool _isGrounded;
+    
+    private bool _isCrouching;
     // Start is called before the first frame update
     void Start()
     {
@@ -25,16 +29,16 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        bool grounded = _controller.isGrounded;
+        _isGrounded = _controller.isGrounded;
 
-        if (grounded && _playerVel.y < 0)
+        if (_isGrounded && _playerVel.y < 0)
         {
             _playerVel.y = 0;
         }
         
         _controller.Move(GetVelocity() * Time.deltaTime * _speed);
-
-        if (Input.GetButtonDown("Jump") && grounded)
+        CheckCrouch();
+        if (Input.GetButtonDown("Jump") && _isGrounded)
         {
             _playerVel.y = _jumpHeight;
         }
@@ -46,5 +50,31 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector3 move = transform.right * Input.GetAxis("Horizontal") + transform.forward * Input.GetAxis("Vertical");
         return Vector3.ClampMagnitude(move, 1f);
+    }
+    
+    private void CheckCrouch()
+    {
+        if (Input.GetKey(KeyCode.LeftControl))
+        {
+            if (_isGrounded && !_isCrouching)
+            {
+                _speed /= 2;
+                _jumpHeight /= 2;
+                Vector3 old = transform.localScale;
+                transform.localScale = new Vector3(old.x, old.y / 2, old.z);
+                _isCrouching = true;
+            }
+        }
+        else 
+        {
+            if (_isCrouching)
+            {
+                _speed *= 2;
+                _jumpHeight *= 2;
+                Vector3 old = transform.localScale;
+                transform.localScale = new Vector3(old.x, old.y * 2, old.z);
+                _isCrouching = false;
+            }
+        }
     }
 }
