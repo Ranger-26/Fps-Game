@@ -29,11 +29,10 @@ public class PlayerMovement : MonoBehaviour
 
         if (grounded && _playerVel.y < 0)
         {
-            _playerVel.y = 0;}
-
-        Vector3 move = transform.right * Input.GetAxis("Horizontal") + transform.forward * Input.GetAxis("Vertical");
+            _playerVel.y = 0;
+        }
         
-        _controller.Move(move * Time.deltaTime * _speed);
+        _controller.Move(GetVelocity() * Time.deltaTime * _speed);
 
         if (Input.GetButtonDown("Jump") && grounded)
         {
@@ -41,5 +40,11 @@ public class PlayerMovement : MonoBehaviour
         }
 
         _playerVel.y += _gravity * Time.deltaTime;_controller.Move(_playerVel * Time.deltaTime); 
+    }
+
+    Vector3 GetVelocity()
+    {
+        Vector3 move = transform.right * Input.GetAxis("Horizontal") + transform.forward * Input.GetAxis("Vertical");
+        return Vector3.ClampMagnitude(move, 1f);
     }
 }
