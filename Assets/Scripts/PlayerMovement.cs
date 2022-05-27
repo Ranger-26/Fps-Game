@@ -13,6 +13,14 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private float _jumpHeight = 5f;
 
+    [SerializeField] 
+    private AudioClip[] _playableFootstepSounds;
+
+    [SerializeField] 
+    private float _footstepDistance;
+
+    private AudioSource _audioSource;
+    
     private Vector3 _playerVel;
 
     private CharacterController _controller;
@@ -20,10 +28,16 @@ public class PlayerMovement : MonoBehaviour
     private bool _isGrounded;
     
     private bool _isCrouching;
+
+    private Vector3 _lastFootstepPosition;
+
+    private bool _playFootstepOnLand;
     // Start is called before the first frame update
     void Start()
     {
         _controller = GetComponent<CharacterController>();
+        _audioSource = GetComponent<AudioSource>();
+        _lastFootstepPosition = transform.position;
     }
 
     // Update is called once per frame
@@ -34,13 +48,20 @@ public class PlayerMovement : MonoBehaviour
         if (_isGrounded && _playerVel.y < 0)
         {
             _playerVel.y = 0;
+            if (_playFootstepOnLand)
+            {
+                Footstep();
+                _playFootstepOnLand = false;
+            }
         }
         
         _controller.Move(GetVelocity() * Time.deltaTime * _speed);
         CheckCrouch();
+        CheckFootstep();
         if (Input.GetButtonDown("Jump") && _isGrounded)
         {
             _playerVel.y = _jumpHeight;
+            _playFootstepOnLand = true;
         }
 
         _playerVel.y += _gravity * Time.deltaTime;_controller.Move(_playerVel * Time.deltaTime); 
@@ -76,5 +97,21 @@ public class PlayerMovement : MonoBehaviour
                 _isCrouching = false;
             }
         }
+    }
+
+    private void CheckFootstep()
+    {
+        if (_isCrouching) return;
+
+        if (_isGrounded && Vector3.Distance(_lastFootstepPosition, transform.position) >= _footstepDistance)
+        {
+            Footstep();
+        }
+    }
+    
+    private void Footstep()
+    {
+        _audioSource.PlayOneShot(_playableFootstepSounds[Random.Range(0, _playableFootstepSounds.Length)]);
+        _lastFootstepPosition = transform.position;
     }
 }
