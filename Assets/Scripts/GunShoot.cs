@@ -2,23 +2,18 @@
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
+using Random = UnityEngine.Random;
 
+[RequireComponent(typeof(AudioSource))]
 public class GunShoot : MonoBehaviour
 {
     public GunData GunData;
 
-    public UnityEvent OnGunShot;
-
-    public UnityEvent OnGunDraw;
-
-    public FirePoint FirePoint;
+    private AudioSource _audioSource;
 
     private void Start()
     {
-        if (FirePoint == null)
-        {
-            FirePoint = GetComponentInChildren<FirePoint>();
-        }
+        _audioSource = GetComponent<AudioSource>();
     }
 
     private void Update()
@@ -45,6 +40,13 @@ public class GunShoot : MonoBehaviour
 
     public void Shoot()
     {
-        
+        Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0f));
+        _audioSource.PlayOneShot(GunData.GunShootSounds[Random.Range(0, GunData.GunShootSounds.Length)]);
+        if (Physics.Raycast(ray, out RaycastHit hit, GunData.Range))
+        {
+            Debug.Log("I hit something!");
+            Instantiate(GunData.HitDecal, hit.transform.position, Quaternion.identity);
+            _audioSource.PlayOneShot(GunData.GunHitSounds[Random.Range(0, GunData.GunHitSounds.Length)]);
+        }
     }
 }

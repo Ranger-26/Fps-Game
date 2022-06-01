@@ -12,4 +12,6 @@ public class GunData : ScriptableObject
     public FiringMode FiringMode;
 
     public float FireRate;
+
+    public GameObject HitDecal;
 }
