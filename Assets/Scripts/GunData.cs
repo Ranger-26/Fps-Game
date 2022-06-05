@@ -2,17 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GunData : MonoBehaviour
+[CreateAssetMenu(fileName = "Gun", menuName = "Item")]
+public class GunData : ScriptableObject
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public float Range;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public FiringMode FiringMode;
+
+    public float FireRate;
+
+    public GameObject HitDecal;
 }
