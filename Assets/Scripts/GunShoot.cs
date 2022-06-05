@@ -41,12 +41,10 @@ public class GunShoot : MonoBehaviour
     public void Shoot()
     {
         Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0f));
-        _audioSource.PlayOneShot(GunData.GunShootSounds[Random.Range(0, GunData.GunShootSounds.Length)]);
         if (Physics.Raycast(ray, out RaycastHit hit, GunData.Range))
         {
-            Debug.Log("I hit something!");
-            Instantiate(GunData.HitDecal, hit.transform.position, Quaternion.identity);
-            _audioSource.PlayOneShot(GunData.GunHitSounds[Random.Range(0, GunData.GunHitSounds.Length)]);
+            GameObject decal = Instantiate(GunData.HitDecal, hit.point, Quaternion.identity);
+            Destroy(decal, 3f);
         }
     }
 }
