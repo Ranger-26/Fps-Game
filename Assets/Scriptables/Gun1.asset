@@ -16,3 +16,7 @@ MonoBehaviour:
   FiringMode: 1
   FireRate: 0.25
   HitDecal: {fileID: 134600267206092792, guid: 9ac898d51081d3d46b24801043fb27d5, type: 3}
+  shootSounds:
+  - {fileID: 8300000, guid: 6d3251cbec5767f4487ead80673f27fb, type: 3}
+  hitSounds:
+  - {fileID: 8300000, guid: 2df8be33ff2054747bd209ba3281ef0c, type: 3}
